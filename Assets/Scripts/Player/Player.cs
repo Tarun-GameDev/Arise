@@ -18,33 +18,11 @@ public class Player : MonoBehaviour
         {
             Touch touch = Input.GetTouch(0);
 
-            switch (touch.phase)
+            if (touch.phase == TouchPhase.Stationary || touch.phase == TouchPhase.Moved)
             {
-                case TouchPhase.Began:
-                    touchStartPos = touch.position;
-                    isTouching = true;
-                    break;
+                Vector3 touchedPos = Camera.main.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, 10));
 
-                case TouchPhase.Moved:
-                    if (isTouching)
-                    {
-
-                        rb.MovePosition(new Vector3((touch.deltaPosition.x * speedMultiplier * Time.deltaTime) + rb.position.x, (touch.deltaPosition.y * speedMultiplier * Time.deltaTime) + rb.position.y,0f));
-                            /** speedMultiplier * Time.deltaTime, 0f));
-
-                        Vector3 touchCurrentPos = touch.position;
-                        Vector3 touchDelta = touchCurrentPos - touchStartPos;
-
-                        // Calculate the position change and set it as the object's position
-                        rb.position += new Vector3(touchDelta.x, touchDelta.y,0f);
-
-                        touchStartPos = touchCurrentPos; // Update the starting touch position*/
-                    }
-                    break;
-
-                case TouchPhase.Ended:
-                    isTouching = false;
-                    break;
+                transform.position = Vector3.Lerp(transform.position, touchedPos, Time.deltaTime * speedMultiplier);
             }
         }
     }
